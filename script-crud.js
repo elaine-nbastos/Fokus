@@ -1,11 +1,16 @@
 // adicionar tarefa
 
 const btAdicionarTarefa = document.querySelector('.app__button--add-task');
+const btCancelarTarefa = document.querySelector('.app__form-footer__button--cancel');
 const formAdicionarTarefa = document.querySelector('.app__form-add-task');
 const textArea = document.querySelector('.app__form-textarea');
 const ulTarefas = document.querySelector('.app__section-task-list');
 
 const tarefas = JSON.parse(localStorage.getItem('tarefas'))|| [];
+
+function atualizarTarefas (){
+    localStorage.setItem('tarefas', JSON.stringify(tarefas));
+};
 
 function criarElementoTarefa(tarefa) {
     const li = document.createElement('li');
@@ -30,7 +35,14 @@ function criarElementoTarefa(tarefa) {
     botao.classList.add('app_button-edit');
 
     botao.onclick = () => {
-        prompt("Qual é o novo nome da tarefa?");
+        const novaDescricao = prompt("Qual é o novo nome da tarefa?");
+        console.log('Nova descrição da tarefa:', novaDescricao);
+        if (novaDescricao) {
+            paragrafo.textContent = novaDescricao;
+            tarefa.descricao = novaDescricao;
+            atualizarTarefas();
+        }
+
     };
 
     const imagemBotao = document.createElement('img');
@@ -42,11 +54,16 @@ function criarElementoTarefa(tarefa) {
     li.append(botao);
 
     return li;
-}
+};
 
 btAdicionarTarefa.addEventListener('click', () => {
     formAdicionarTarefa.classList.toggle('hidden');
-})
+});
+
+btCancelarTarefa.onclick = () => {
+    textArea.value='';
+    formAdicionarTarefa.classList.add('hidden');
+};
 
 formAdicionarTarefa.addEventListener('submit', (evento) => {
     evento.preventDefault();
@@ -56,10 +73,10 @@ formAdicionarTarefa.addEventListener('submit', (evento) => {
     tarefas.push(tarefa);
     const elementoTarefa = criarElementoTarefa(tarefa);
     ulTarefas.append(elementoTarefa);
-    localStorage.setItem('tarefas', JSON.stringify(tarefas));
+    atualizarTarefas();
     textArea.value = '';
     formAdicionarTarefa.classList.add('hidden');
-})
+});
 
 tarefas.forEach(tarefa => {
     const elementoTarefa = criarElementoTarefa(tarefa);
